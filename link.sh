@@ -1,22 +1,9 @@
 #!/bin/bash
 
-# The folder where all of your drives are mounted to
-drive_folder="/media";
-# The folder where all of your drives should be linked to (make sure the directory exists and is writeable by current user)
-link_folder="/media/pool";
-# The folder which exists on every drive and should be linked
-inner_folder="media";
+# Import config file
+. config.sh
 
-# Array of drives to link
-drives=("drive1" "drive2" "drive3" "drive4");
-# Array of folders to link
-folders=("movies" "shows");
-
-# Set to true to clear the link folder before creating new links
-clear_first=false;
-# Merge all files into the same directory (no duplicates possible!) or create a own folder for each drive
-create_drive_folder=false;
-
+# Check if we should clear link
 if [ "$clear_first" = true ]; then
 	printf "CLEARING\n";
 	rm -rf $link_folder/*; # Clear link folder
@@ -64,7 +51,7 @@ for full_drive in $drive_folder/*/; do
 				fi
 
 				printf "\t\tLINK $drive\n";
-				
+
 				# Check if we need to create a folder for each drive
 				if [ "$create_drive_folder" = true ]; then
 					ln -s $full_drive$inner_folder/$folder $active_folder/$drive; # Link the folder to a subfolder with the name of the drive
