@@ -91,17 +91,17 @@ if [ "$daemonize" = true ]; then
 				printf "\tLINK $file\n";
 				ln -s $path$file $link_path;
 			else
-				echo "\tIGNORE $file\n";
+				printf "\tIGNORE $file\n";
 			fi
 		elif [[ "$action" == "DELETE" || "$action" == "MOVED_FROM" ]]; then
 			if [ -L $link_path ]; then
-				echo "\tUNLINK $file\n";
+				printf "\tUNLINK $file\n";
 				unlink $link_path;
 			else
-				echo "\tIGNORE $file\n";
+				printf "\tIGNORE $file\n";
 			fi
 		else
-			echo "\tUNKNOWN $path $action $file\n";
+			printf "\tUNKNOWN $path $action $file\n";
 		fi
 	done
 fi
