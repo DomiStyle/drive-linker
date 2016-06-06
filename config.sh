@@ -12,9 +12,9 @@ drives=("drive1" "drive2" "drive3" "drive4");
 # Array of folders to link
 folders=("movies" "shows");
 
-# Run a daemon to link/unlink in realtime (does not work with create_drive_folder)
+# Run a daemon to link/unlink in realtime (does not work with create_drive_folders)
 daemonize=false;
 # Set to true to clear the link folder before creating new links
-clear_first=false;
+clear_links=false;
 # Merge all files into the same directory (no duplicates possible!) or create a own folder for each drive
-create_drive_folder=false;
+create_drive_folders=false;

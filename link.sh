@@ -6,13 +6,13 @@
 # Saves all folders that were linked for usage with the daemon
 linked_folders=();
 
-if [[ "$daemonize" = true && "$create_drive_folder" = true ]]; then
+if [[ "$daemonize" = true && "$create_drive_folders" = true ]]; then
 	printf "ERROR: Can't run as daemon and create drive folders.\n";
 	exit 1;
 fi
 
-# Check if we should clear link
-if [ "$clear_first" = true ]; then
+# Check if we should clear link folder
+if [ "$clear_links" = true ]; then
 	printf "CLEARING\n";
 	rm -rf $link_folder/*; # Clear link folder
 fi
@@ -61,7 +61,7 @@ for full_drive in $drive_folder/*/; do
 				printf "\t\tLINK $drive\n";
 
 				# Check if we need to create a folder for each drive
-				if [ "$create_drive_folder" = true ]; then
+				if [ "$create_drive_folders" = true ]; then
 					ln -s $full_drive$inner_folder/$folder $active_folder/$drive; # Link the folder to a subfolder with the name of the drive
 				else
 					linked_folders+=("$full_drive$inner_folder/$folder");
