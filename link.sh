@@ -14,12 +14,12 @@ fi
 # Check if we should clear link folder
 if [ "$clear_links" = true ]; then
 	printf "CLEARING\n";
-	rm -rf $link_folder/*; # Clear link folder
+	rm -rf "$link_folder"/*; # Clear link folder
 fi
 
 # Loop through available mounted drives in folder
-for full_drive in $drive_folder/*/; do
-	drive="$(basename $full_drive)"; # Get the basename of the drive
+for full_drive in "$drive_folder"/*/; do
+	drive=$(basename "$full_drive"); # Get the basename of the drive
 	allow=false;
 
 	# Loop through whitelisted drives
@@ -35,10 +35,10 @@ for full_drive in $drive_folder/*/; do
 		printf "HANDLE $drive\n";
 
 		# Loop through folders on drive (inside the inner folder)
-		for full_folder in $full_drive$inner_folder/*/; do
-			folder="$(basename $full_folder)"; # Get the basename of the folder
+		for full_folder in "$full_drive$inner_folder"/*/; do
+			folder=$(basename "$full_folder"); # Get the basename of the folder
 			allow=false;
-			active_folder=$link_folder/$folder;
+			active_folder="$link_folder/$folder";
 
 			# Loop through whitelisted folders
 			for whitelisted_folder in "${folders[@]}"; do
@@ -53,7 +53,7 @@ for full_drive in $drive_folder/*/; do
 				# Check if we need to create this folder
 				if [ ! -d "$active_folder" ]; then
 					printf "\tCREATE $folder\n";
-					mkdir -p $active_folder; # Folder doesn't exist yet, create it
+					mkdir -p "$active_folder"; # Folder doesn't exist yet, create it
 				else
 					printf "\tIGNORE $folder\n";
 				fi
@@ -62,10 +62,10 @@ for full_drive in $drive_folder/*/; do
 
 				# Check if we need to create a folder for each drive
 				if [ "$create_drive_folders" = true ]; then
-					ln -s $full_drive$inner_folder/$folder $active_folder/$drive; # Link the folder to a subfolder with the name of the drive
+					ln -s "$full_drive$inner_folder/$folder" "$active_folder/$drive"; # Link the folder to a subfolder with the name of the drive
 				else
 					linked_folders+=("$full_drive$inner_folder/$folder");
-					ln -s $full_drive$inner_folder/$folder/* $active_folder; # Link all files inside the folder to the link folder
+					ln -s "$full_drive$inner_folder/$folder/"* "$active_folder"; # Link all files inside the folder to the link folder
 				fi
 			fi
 		done
@@ -83,20 +83,20 @@ if [ "$daemonize" = true ]; then
 
 	inotifywait $parameters |
 	while read path action file; do
-		link_path=$link_folder/$(basename $path)/$file;
-		action=${action%,ISDIR};
+		link_path="$link_folder"/$(basename "$path")/"$file";
+		action="${action%,ISDIR}";
 
 		if [[ "$action" == "CREATE" || "$action" == "MOVED_TO" ]]; then
-			if [[ ! -d $link_path && ! -f $link_path ]]; then
+			if [[ ! -d "$link_path" && ! -f "$link_path" ]]; then
 				printf "\tLINK $file\n";
-				ln -s $path$file $link_path;
+				ln -s "$path$file" "$link_path";
 			else
 				printf "\tIGNORE $file\n";
 			fi
 		elif [[ "$action" == "DELETE" || "$action" == "MOVED_FROM" ]]; then
-			if [ -L $link_path ]; then
+			if [ -L "$link_path" ]; then
 				printf "\tUNLINK $file\n";
-				unlink $link_path;
+				unlink "$link_path";
 			else
 				printf "\tIGNORE $file\n";
 			fi
