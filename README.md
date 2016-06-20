@@ -15,10 +15,10 @@ Drive linker has two modes:
 * Merge mode
 * Drive mode
 
-For explaining how both modes work, lets assume you have two drives mounted inside /mounts. The script works with any amount of drives and any path though.
+For explaining how both modes work, lets assume you have two drives mounted inside /drives. The script works with any amount of drives and any path though.
 
 Here is what your existing folder structure might look like:
-* mounts
+* drives
   * drive1
     * media
       * movies
@@ -29,7 +29,7 @@ Here is what your existing folder structure might look like:
       * shows
 
 Merge mode will convert above structure to the following:
-* mounts
+* drives
   * pool
     * movies
       * All your movies from drive1 & drive2
@@ -37,7 +37,7 @@ Merge mode will convert above structure to the following:
       * All your shows from drive1 & drive2
 
 Drive mode will convert the structure from above to the following:
-* mounts
+* drives
   * pool
     * movies
       * drive1
@@ -82,7 +82,7 @@ Below is a description of every configuration field. To configure drive linker s
 ```
 drive_folder="/media";
 ```
-drive_folder determines where your drives are mounted. In the example from above this would be /mounts.
+drive_folder determines where your drives are mounted. In the example from above this would be /drives.
 Please note that every drive should be in this folder - no subfolders!
 Read/write permissions of these files/folders are carried over so change them accordingly.
 
