@@ -7,6 +7,9 @@ The script uses only plain symlinks to achieve this which means that it a) doesn
 It should be noted, that this is not a complete replacement for mhddfs or UnionFS. You might require to be able to write to the pooled storage and while this works with the current implementation I can't recommend it.
 If you want to know if this is the right thing for you, give it a try. Depending on your requirements it might be just the right thing for you.
 
+## Prerequisites
+The script requires a operating system which is able to interpret shell scripts as well as the **ln** utility for creating symbolic links and the **inotifywait** utility for watching directories. inotifywait is only required when using the merge mode with activated daemon.
+
 ## How does it work?
 Drive linker has two modes:
 * Merge mode
