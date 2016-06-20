@@ -72,36 +72,42 @@ for full_drive in "$drive_folder"/*/; do
 	fi
 done
 
+# Check if we should run the daemon
 if [ "$daemonize" = true ]; then
 	printf "Starting daemon...\n";
 
+	# Set the parameters for inotifywait
 	parameters="-m -e moved_to,moved_from,move,move_self,delete_self,create,delete";
 
+	# Loop through linked folders and append them to the parameter list
 	for linked_folder in "${linked_folders[@]}"; do
 		parameters+=" $linked_folder";
 	done
 
+	# Execute inotifywait
 	inotifywait $parameters |
 	while read path action file; do
-		link_path="$link_folder"/$(basename "$path")/"$file";
-		action="${action%,ISDIR}";
+		link_path="$link_folder"/$(basename "$path")/"$file"; # Generate path of the file/folder just added
+		action="${action%,ISDIR}"; # Remove ISDIR from action type - we don't care if it's a folder or file
 
-		if [[ "$action" == "CREATE" || "$action" == "MOVED_TO" ]]; then
+		if [[ "$action" == "CREATE" || "$action" == "MOVED_TO" ]]; then # Check if a new file/folder needs to be linked
+			# Check if the target file/folder doesn't exist already
 			if [[ ! -d "$link_path" && ! -f "$link_path" ]]; then
 				printf "\tLINK $file\n";
-				ln -s "$path$file" "$link_path";
+				ln -s "$path$file" "$link_path"; # Link the new file/folder
 			else
-				printf "\tIGNORE $file\n";
+				printf "\tIGNORE $file\n"; # Ignore the new file/folder (it already is linked)
 			fi
-		elif [[ "$action" == "DELETE" || "$action" == "MOVED_FROM" ]]; then
+		elif [[ "$action" == "DELETE" || "$action" == "MOVED_FROM" ]]; then # Check if a file/folder has been deleted
+			# Check if link still exists
 			if [ -L "$link_path" ]; then
 				printf "\tUNLINK $file\n";
-				unlink "$link_path";
+				unlink "$link_path"; # Unlink if it exists
 			else
-				printf "\tIGNORE $file\n";
+				printf "\tIGNORE $file\n"; # Ignore if it doesn't exist
 			fi
 		else
-			printf "\tUNKNOWN $path $action $file\n";
+			printf "\tUNKNOWN $path $action $file\n"; # Received an unhandled inotifywait event
 		fi
 	done
 fi
