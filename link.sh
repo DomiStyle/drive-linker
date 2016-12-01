@@ -12,9 +12,9 @@ if [[ "$daemonize" = true && "$create_drive_folders" = true ]]; then
 fi
 
 # Check if we should clear link folder
-if [ "$clear_links" = true ]; then
+if [[ "$clear_links" = true && -n "$link_folder" ]]; then
 	printf "CLEARING\n";
-	rm -rf "$link_folder"/*; # Clear link folder
+	rm -rf "$link_folder/*"; # Clear link folder
 fi
 
 # Loop through available mounted drives in folder
